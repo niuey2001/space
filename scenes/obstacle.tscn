@@ -1,0 +1,43 @@
+[gd_scene format=3 uid="uid://bg8f6hfvma4op"]
+
+[ext_resource type="Script" uid="uid://0s2tmcfb3lsl" path="res://scenes/obstacle.gd" id="1_5oy3q"]
+[ext_resource type="PackedScene" uid="uid://do10nqeewijvj" path="res://graphics/rock.glb" id="1_7ukg5"]
+[ext_resource type="PackedScene" uid="uid://cd54cddqlqkl3" path="res://graphics/rock_crystals.glb" id="2_drdry"]
+[ext_resource type="PackedScene" uid="uid://b13liceci6r73" path="res://graphics/rover.glb" id="3_cjuko"]
+[ext_resource type="PackedScene" uid="uid://rbg7k5kngnr0" path="res://graphics/satelliteDish_large.glb" id="4_sh7k1"]
+[ext_resource type="PackedScene" uid="uid://cad0pkdyaet27" path="res://graphics/turret_double.glb" id="5_i4xvc"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_3xr6u"]
+size = Vector3(1, 0.8623047, 0.6611328)
+
+[node name="Obstacle" type="Area3D" unique_id=1094593500]
+collision_mask = 2
+script = ExtResource("1_5oy3q")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="." unique_id=102877692]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.41193408, 0)
+shape = SubResource("BoxShape3D_3xr6u")
+
+[node name="Meshes" type="Node3D" parent="." unique_id=1947847802]
+
+[node name="rock2" parent="Meshes" unique_id=319309004 instance=ExtResource("1_7ukg5")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8753635, 1.1920929e-07, -1.4542294)
+visible = false
+
+[node name="rock_crystals2" parent="Meshes" unique_id=596807909 instance=ExtResource("2_drdry")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8301146, 0, -1.4530125)
+visible = false
+
+[node name="rover2" parent="Meshes" unique_id=424525601 instance=ExtResource("3_cjuko")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.8794858, 0, -1.4432836)
+visible = false
+
+[node name="satelliteDish_large2" parent="Meshes" unique_id=563780079 instance=ExtResource("4_sh7k1")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -1.9000595, 0, -1.2523737)
+visible = false
+
+[node name="turret_double2" parent="Meshes" unique_id=468973031 instance=ExtResource("5_i4xvc")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.0020642, 0.043622255, -1.3135021)
+visible = false
+
+[connection signal="body_entered" from="." to="." method="_on_body_entered"]

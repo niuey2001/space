@@ -1,0 +1,51 @@
+[gd_scene format=3 uid="uid://ceavn2xqnuvcq"]
+
+[ext_resource type="Script" uid="uid://228pybf8eaww" path="res://scenes/test_3d.gd" id="1_sr87j"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_sr87j"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_psit6"]
+sky_material = SubResource("ProceduralSkyMaterial_sr87j")
+
+[sub_resource type="Environment" id="Environment_7yo4j"]
+background_mode = 2
+sky = SubResource("Sky_psit6")
+glow_enabled = true
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_w2n3d"]
+albedo_color = Color(0.21176471, 0.654902, 0.6862745, 1)
+roughness = 0.37
+
+[sub_resource type="BoxMesh" id="BoxMesh_2oxwf"]
+material = SubResource("StandardMaterial3D_w2n3d")
+size = Vector3(0.7949219, 0.8288574, 0.600708)
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_sr87j"]
+albedo_color = Color(0.9019608, 0.3529412, 1, 1)
+
+[sub_resource type="TorusMesh" id="TorusMesh_2oxwf"]
+material = SubResource("StandardMaterial3D_sr87j")
+
+[node name="Test3D" type="Node3D" unique_id=1248424]
+script = ExtResource("1_sr87j")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1845366463]
+environment = SubResource("Environment_7yo4j")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1834507028]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1513710616]
+transform = Transform3D(0.9995355, 0, 0.030475885, 0, 1, 0, -0.030475885, 0, 0.9995355, 0.010953248, -0.05410421, -0.051698744)
+visible = false
+mesh = SubResource("BoxMesh_2oxwf")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=233984553]
+transform = Transform3D(1, 0, 0, 0, 0.96960104, 0.24469115, 0, -0.24469115, 0.96960104, -0.022775948, 0.73234487, 2.919833)
+fov = 81.56249
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="." unique_id=683421611]
+mesh = SubResource("TorusMesh_2oxwf")

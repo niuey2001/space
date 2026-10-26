@@ -1,0 +1,150 @@
+[gd_scene format=3 uid="uid://bfs6qf5mxh55j"]
+
+[ext_resource type="PackedScene" uid="uid://udit1k8ej22i" path="res://scenes/player.tscn" id="1_uwrxv"]
+[ext_resource type="Script" uid="uid://bqbfp8e7koqvh" path="res://scenes/game.gd" id="1_yqjtg"]
+[ext_resource type="AudioStream" uid="uid://c8ep55dhtdbhu" path="res://audio/spaceship.wav" id="3_lnu2h"]
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_uwrxv"]
+sky_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+ground_horizon_color = Color(0.66224277, 0.6717428, 0.6867428, 1)
+
+[sub_resource type="Sky" id="Sky_yqjtg"]
+sky_material = SubResource("ProceduralSkyMaterial_uwrxv")
+
+[sub_resource type="Environment" id="Environment_lnu2h"]
+background_mode = 2
+sky = SubResource("Sky_yqjtg")
+glow_enabled = true
+
+[sub_resource type="Shader" id="Shader_lnu2h"]
+code = "// NOTE: Shader automatically converted from Godot Engine 4.7.2.stable's StandardMaterial3D.
+
+shader_type spatial;
+render_mode blend_mix, depth_draw_opaque, cull_back, diffuse_burley, specular_schlick_ggx;
+
+uniform vec4 albedo : source_color;
+uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
+uniform ivec2 albedo_texture_size;
+uniform float point_size : hint_range(0.1, 128.0, 0.1);
+
+uniform float roughness : hint_range(0.0, 1.0);
+uniform sampler2D texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
+uniform vec4 metallic_texture_channel;
+uniform sampler2D texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
+
+uniform float specular : hint_range(0.0, 1.0, 0.01);
+uniform float metallic : hint_range(0.0, 1.0, 0.01);
+
+uniform vec3 uv1_scale;
+uniform vec3 uv1_offset;
+uniform vec3 uv2_scale;
+uniform vec3 uv2_offset;
+uniform sampler2D noise_texture;
+
+void vertex() {
+	UV = UV * uv1_scale.xy + uv1_offset.xy;
+	float noise_sample = texture(noise_texture,UV).r;
+	VERTEX +=vec3(0,noise_sample * 0.5 ,0);
+	
+}
+
+void fragment() {
+	vec2 base_uv = UV;
+
+	vec4 albedo_tex = texture(texture_albedo, base_uv);
+	ALBEDO = albedo.rgb * albedo_tex.rgb;
+
+	float metallic_tex = dot(texture(texture_metallic, base_uv), metallic_texture_channel);
+	METALLIC = metallic_tex * metallic;
+	SPECULAR = specular;
+
+	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
+	float roughness_tex = dot(texture(texture_roughness, base_uv), roughness_texture_channel);
+	ROUGHNESS = roughness_tex * roughness;
+}
+"
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_lnu2h"]
+noise_type = 0
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_lnu2h"]
+noise = SubResource("FastNoiseLite_lnu2h")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_lbhrr"]
+render_priority = 0
+shader = SubResource("Shader_lnu2h")
+shader_parameter/albedo = Color(0.8235294, 0.7058824, 0.5019608, 1)
+shader_parameter/albedo_texture_size = Vector2i(0, 0)
+shader_parameter/point_size = 1.0
+shader_parameter/roughness = 1.0
+shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.5
+shader_parameter/metallic = 0.0
+shader_parameter/uv1_scale = Vector3(1, 1, 1)
+shader_parameter/uv1_offset = Vector3(0, 0, 0)
+shader_parameter/uv2_scale = Vector3(1, 1, 1)
+shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/noise_texture = SubResource("NoiseTexture2D_lnu2h")
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_uwrxv"]
+material = SubResource("ShaderMaterial_lbhrr")
+size = Vector2(130, 130)
+subdivide_width = 100
+subdivide_depth = 100
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_lnu2h"]
+size = Vector3(1, 1, 6.607422)
+
+[node name="Game" type="Node3D" unique_id=10195225]
+script = ExtResource("1_yqjtg")
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="." unique_id=1474733550]
+environment = SubResource("Environment_lnu2h")
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1364605530]
+transform = Transform3D(-0.8660254, -0.43301278, 0.25, 0, 0.49999997, 0.86602545, -0.50000006, 0.75, -0.43301266, 0, 0, 0)
+shadow_enabled = true
+
+[node name="Player" parent="." unique_id=1347035827 instance=ExtResource("1_uwrxv")]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="." unique_id=1417772836]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.6, -2, -16)
+mesh = SubResource("PlaneMesh_uwrxv")
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=47510372]
+transform = Transform3D(0.9906017, -0.10094434, 0.09229597, 0.0061705927, 0.7070799, 0.70710677, -0.13663904, -0.6998917, 0.7010574, 0, 6.5, 2.9)
+fov = 74.92128
+
+[node name="Timers" type="Node3D" parent="." unique_id=901092288]
+
+[node name="MeteorTimer" type="Timer" parent="Timers" unique_id=1491633376]
+wait_time = 0.25
+autostart = true
+
+[node name="ObstacleTimer" type="Timer" parent="Timers" unique_id=349833929]
+wait_time = 2.0
+autostart = true
+
+[node name="Projectiles" type="Node3D" parent="." unique_id=511240560]
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="." unique_id=1594731520]
+stream = ExtResource("3_lnu2h")
+volume_db = -20.0
+autoplay = true
+
+[node name="StaticBody3D" type="StaticBody3D" parent="." unique_id=1476453046]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D" unique_id=1394818890]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 7.26521, -0.2726605, 0)
+shape = SubResource("BoxShape3D_lnu2h")
+
+[node name="StaticBody3D2" type="StaticBody3D" parent="." unique_id=2007312212]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -14.07103, 0.8907585, 2.056532)
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D2" unique_id=2106353585]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.0320044, -0.9265585, -1.8005311)
+shape = SubResource("BoxShape3D_lnu2h")
+
+[connection signal="shoot_laser" from="Player" to="." method="_on_player_shoot_laser"]
+[connection signal="timeout" from="Timers/MeteorTimer" to="." method="_on_meteor_timer_timeout"]
+[connection signal="timeout" from="Timers/ObstacleTimer" to="." method="_on_obstacle_timer_timeout"]
